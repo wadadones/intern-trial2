@@ -32,4 +32,38 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     assert_select 'a', text: 'delete', count: 0
   end
 
+  test "should show own microposts, following user's microposts and "do
+    from_user   = users(:michael)
+    to_user     = users(:archer)
+    other_user1 = users(:lana)
+    other_user2 = users(:john)
+
+    unique_name = to_user.unique_name
+    content = "@#{unique_name} test"
+    log_in_as(from_user)
+
+    post microposts_path, params: { micropost: { content: content} }
+
+     # 投稿のid取得
+    micropost_id = from_user.microposts.first.id
+
+    # 返信元ユーザのフィードに返信の投稿がある
+    get root_path
+    assert_select "#micropost-#{micropost_id} span.content", text: content
+
+    # 返信先ユーザのフィードに返信の投稿がある
+    log_in_as(to_user)
+    get root_path
+    assert_select "#micropost-#{micropost_id} span.content", text: content
+
+    # 返信元ユーザをフォローしているユーザのフィードに返信の投稿がある
+    log_in_as(other_user1)
+    get root_path
+    assert_select "#micropost-#{micropost_id} span.content", text: content
+
+    # 返信元ユーザをフォローしていないユーザのフィードに返信の投稿がない
+    log_in_as(other_user2)
+    get root_path
+    assert_no_match "micropost-#{micropost_id}", response.body
+  end
 end

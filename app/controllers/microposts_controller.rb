@@ -4,6 +4,13 @@ class MicropostsController < ApplicationController
 
   def create
     @micropost = current_user.microposts.build(micropost_params)
+    re = /@([0-9a-z_]{5,15})/i
+    @micropost.content.match(re)
+
+    if $1
+      reply_user = User.find_by(unique_name: $1.downcase)
+      @micropost.in_reply_to = reply_user.id if reply_user
+    end
     if @micropost.save
       flash[:success] = "Microposts created!"
       redirect_to root_path
