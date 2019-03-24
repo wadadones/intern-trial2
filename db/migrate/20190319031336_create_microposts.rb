@@ -1,7 +1,7 @@
 class CreateMicroposts < ActiveRecord::Migration[5.1]
   def change
-    create_table :microposts do |t|
-      t.text :content
+    create_table :microposts, comment: "投稿" do |t|
+      t.text :content, comment: "内容"
       t.references :user, foreign_key: true
 
       t.timestamps

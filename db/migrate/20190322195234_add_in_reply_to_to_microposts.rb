@@ -1,5 +1,5 @@
 class AddInReplyToToMicroposts < ActiveRecord::Migration[5.1]
   def change
-    add_column :microposts, :in_reply_to, :integer
+    add_column :microposts, :in_reply_to, :integer, comment: "返信先ユーザーID"
   end
 end
