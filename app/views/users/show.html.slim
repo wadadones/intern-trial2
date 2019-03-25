@@ -1,20 +1,20 @@
-- provide(:title, @user.name)
+- provide(:title, user.name)
 .row
   aside.col-md-4
     section.user_info
       h1
-        = gravatar_for @user
-        = @user.name
+        = gravatar_for user
+        = user.name
       h2
-        = @user.unique_name
+        = user.unique_name
     section.stats
       = render 'shared/stats'
   .col-md-8
     = render 'follow_form' if logged_in?
-    - if @user.microposts.any?
+    - if user.microposts.any?
       h3
         | 投稿 (
-        = @user.microposts.count
+        = user.microposts.count
         | )
       ol.microposts
         = render @microposts

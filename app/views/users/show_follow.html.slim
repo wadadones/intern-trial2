@@ -2,21 +2,21 @@
 .row
   aside.col-md-4
     section.user_info
-      = gravatar_for @user
+      = gravatar_for user
       h1
-        = @user.name
+        = user.name
       span
-        = link_to "view my profile", @user
+        = link_to "view my profile", user
       span
         b
           | Microposts:
-        = @user.microposts.count
+        = user.microposts.count
     section.stats
       = render 'shared/stats'
       - if @users.any?
         .user_avatars
-          - @users.each do |user|
-            = link_to gravatar_for(user, size: 30), user
+          - @users.each do |u|
+            = link_to gravatar_for(u, size: 30), u
   .col-md-8
     h3
       = @title
