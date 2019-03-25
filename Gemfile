@@ -19,6 +19,7 @@ gem 'pry-rails', '~> 0.3.4'
 gem 'pry-doc', '~> 0.8.0'
 gem 'slim-rails'
 gem 'html2slim'
+gem 'rails-i18n', '~> 5.1'
 
 group :development, :test do
   gem 'sqlite3', '1.3.13'

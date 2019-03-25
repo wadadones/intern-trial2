@@ -1,0 +1,23 @@
+ja:
+  activerecord:
+    models:
+      micropost: 投稿
+      relationship: 関係
+      user: ユーザー
+      session: セッション
+    attributes:
+      micropost:
+        content: 内容
+        picture: 写真
+      relationship:
+        content: 内容
+      user:
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード確認
+        admin: 管理者権限
+        unique_name: ユーザーID
+      session:
+        email: メール
+        password: パスワード

@@ -13,7 +13,7 @@
     = render 'follow_form' if logged_in?
     - if @user.microposts.any?
       h3
-        | Microposts (
+        | 投稿 (
         = @user.microposts.count
         | )
       ol.microposts

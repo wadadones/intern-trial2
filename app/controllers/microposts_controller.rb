@@ -12,7 +12,7 @@ class MicropostsController < ApplicationController
       @micropost.in_reply_to = reply_user.id if reply_user
     end
     if @micropost.save
-      flash[:success] = "Microposts created!"
+      flash[:success] = "投稿が完了しました。"
       redirect_to root_path
     else
       @feed_items = []
@@ -22,7 +22,7 @@ class MicropostsController < ApplicationController
 
   def destroy
     @micropost.destroy
-    flash[:success] = "Micropost deleted"
+    flash[:success] = "投稿を削除しました。"
     redirect_to request.referrer || root_path
   end
 
