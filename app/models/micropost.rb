@@ -5,13 +5,7 @@ class Micropost < ApplicationRecord
   validates :user_id, presence: true
   validates :content, presence: true, length: { maximum: 140 }
   validate :picture_size #バリデーション独自定義はvalidatesではなくvalidate
-
-
-  def Micropost.including_replies(user)
-    Micropost.where("user_id IN (:following_ids)
-                     OR user_id = :user_id
-                     OR in_reply_to = :user_id", following_ids: user.following_ids, user_id: user.id)
-  end
+  scope :including_replies, -> (user) { where(user_id: user.following_ids).or(where(user_id: user.id)).or(where(in_reply_to: user.id)) }
 
   private
     #画像サイズバリデーション

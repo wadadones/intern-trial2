@@ -6,8 +6,7 @@ class User < ApplicationRecord
   has_many :followers, class_name: "User", through: :passive_relationships, source: :follower
 
   attr_accessor :remember_token
-  before_save { self.email = email.downcase }
-  before_save :downcase_unique_name
+  before_save :downcase_unique_name, :downcase_email
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
@@ -36,7 +35,7 @@ class User < ApplicationRecord
 
   #渡されたトークンがダイジェストと一致したらtrueを返す
   def authenticated?(remember_token)
-    return false if remember_digest.nil?
+    return false unless remember_digest.present?
     BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
 
@@ -64,5 +63,9 @@ class User < ApplicationRecord
   private
     def downcase_unique_name
       self.unique_name.downcase!
+    end
+
+    def downcase_email
+      self.email.downcase!
     end
 end

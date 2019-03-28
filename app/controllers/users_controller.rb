@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
-  before_action :correct_user,   only: [:edit, :update]
+  before_action :check_login_user, only: [:index, :edit, :update, :destroy, :following, :followers]
+  before_action :check_correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: :destroy
   helper_method :user
 
@@ -21,9 +21,9 @@ class UsersController < ApplicationController
     if @user.save
       flash[:success] = "Sample Appへようこそ！"
       log_in @user
-      redirect_to @user
+      redirect_to user_path(@user)
     else
-      render 'new'
+      render :new
     end
   end
 
@@ -34,28 +34,31 @@ class UsersController < ApplicationController
   def update
     if user.update_attributes(user_params)
       flash[:success] = "更新しました。"
-      redirect_to user
+      redirect_to user_path(user)
     else
-      render 'edit'
+      render :edit
     end
   end
 
   def destroy
-    user.destroy
-    flash[:success] = "ユーザーを削除しました。"
+    if user.destroy
+      flash[:success] = "ユーザーを削除しました。"
+    else
+      flash[:danger] = "ユーザーを削除できませんでした。"
+    end
     redirect_to users_path
   end
 
   def following
     @title = "フォロー"
     @users = user.following.paginate(page: params[:page])
-    render 'show_follow'
+    render :show_follow
   end
 
   def followers
     @title = "フォロワー"
     @users = user.followers.paginate(page: params[:page])
-    render 'show_follow'
+    render :show_follow
   end
 
   private
@@ -63,12 +66,12 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :unique_name)
     end
 
-    def correct_user
-      redirect_to(root_path) unless current_user?(user)
+    def check_correct_user
+      redirect_to root_path unless current_user?(user)
     end
 
     def admin_user
-      redirect_to(root_path) unless current_user.admin?
+      redirect_to root_path unless current_user.admin?
     end
 
     def user
