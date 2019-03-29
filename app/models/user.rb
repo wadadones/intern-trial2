@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include Token
   has_many :microposts, class_name: "Micropost", dependent: :destroy
   has_many :active_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
   has_many :passive_relationships, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
@@ -8,10 +9,8 @@ class User < ApplicationRecord
   attr_accessor :remember_token
   before_save :downcase_unique_name, :downcase_email
   validates :name, presence: true, length: { maximum: 50 }
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-  VALID_UNIQUE_NAME_REGEX = /\A[a-z0-9_]+\z/i
-  validates :unique_name, presence: true, length: { in: 5..15 }, format: { with: VALID_UNIQUE_NAME_REGEX }, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, length: { maximum: 255 }, uniqueness: { case_sensitive: false }, email_format: true
+  validates :unique_name, presence: true, length: { in: 5..15 }, uniqueness: { case_sensitive: false }, unique_name_format: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
@@ -22,14 +21,9 @@ class User < ApplicationRecord
     BCrypt::Password.create(string, cost: cost)
   end
 
-  #ランダムなトークンを返す
-  def self.new_token
-    SecureRandom.urlsafe_base64
-  end
-
   #永続セッションのためにユーザーをDBに記憶する
   def remember
-    self.remember_token = User.new_token
+    self.remember_token = new_token
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 

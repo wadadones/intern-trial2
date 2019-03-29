@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :check_login_user, only: [:index, :edit, :update, :destroy, :following, :followers]
+  before_action :check_user_logged_in, only: [:index, :edit, :update, :destroy, :following, :followers]
   before_action :check_correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :check_admin_user,     only: :destroy
   helper_method :user
 
   def index
@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    user
     @microposts = user.microposts.paginate(page: params[:page])
   end
 
@@ -23,6 +24,7 @@ class UsersController < ApplicationController
       log_in @user
       redirect_to user_path(@user)
     else
+      flash.now[:danger] = "登録に失敗しました。"
       render :new
     end
   end
@@ -36,6 +38,7 @@ class UsersController < ApplicationController
       flash[:success] = "更新しました。"
       redirect_to user_path(user)
     else
+      flash.now[:danger] = "更新に失敗しました。"
       render :edit
     end
   end
@@ -70,7 +73,7 @@ class UsersController < ApplicationController
       redirect_to root_path unless current_user?(user)
     end
 
-    def admin_user
+    def check_admin_user
       redirect_to root_path unless current_user.admin?
     end
 

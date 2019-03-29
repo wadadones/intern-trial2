@@ -1,5 +1,5 @@
 class MicropostsController < ApplicationController
-  before_action :check_login_user, only: [:create, :destroy]
+  before_action :check_user_logged_in, only: [:create, :destroy]
   before_action :check_correct_user, only: :destroy
 
   def create
@@ -9,7 +9,7 @@ class MicropostsController < ApplicationController
       flash[:success] = "投稿が完了しました。"
       redirect_to root_path
     else
-      flash[:danger] = "投稿内容を記入してください。"
+      flash[:danger] = "投稿に失敗しました。"
       redirect_to root_path
     end
   end
