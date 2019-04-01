@@ -1,0 +1,7 @@
+- provide(:title, 'All users')
+h1
+  | 全てのユーザー
+= will_paginate
+ul.users
+  = render @users
+= will_paginate
